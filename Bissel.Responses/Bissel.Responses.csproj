@@ -9,7 +9,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>../README.md</PackageReadmeFile>
         <PackageTags>Response, Pipeline, Error-Handling, Exception-Handling</PackageTags>
-        <License type="expression">MIT</License>
+        <License>MIT</License>
         <Copyright>Copyright (c) Bissel 2025</Copyright>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
