@@ -56,7 +56,7 @@ public class ResponseManyBuilder<T> : ResponseBuilderBase
     }
 
     public static implicit operator ResponseWithMany<T>(ResponseManyBuilder<T> builder) =>
-        builder.IsSuccess is true
+        builder.IsSuccess is not false
             ? new ResponseWithMany<T>(builder.Results.ToImmutableList(), builder.ResponseMessages.ToArray())
             : new ResponseWithMany<T>(builder.ResponseMessages.ToArray());
 

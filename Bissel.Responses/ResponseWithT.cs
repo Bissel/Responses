@@ -20,8 +20,10 @@ public class ResponseWith<T> : IResponse
         ResponseMessages = messages.ToList().AsReadOnly();
     }
 
-    public T? Result { get; }
+    private T? Result { get; }
+    
     public bool IsSuccess { get; }
+    
     public ReadOnlyCollection<IResponseMessage> ResponseMessages { get; }
 
     public static implicit operator Task<ResponseWith<T>>(ResponseWith<T> resp) => 
