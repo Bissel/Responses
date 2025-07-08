@@ -116,6 +116,12 @@ public sealed class ResponsePipe<TBuilder> where TBuilder
     
     public static implicit operator Task<TBuilder>(ResponsePipe<TBuilder> pipe) => pipe.Invoke();
 
+    public static ResponsePipe<TBuilder> operator |(ResponsePipe<TBuilder> pipe, Action<TBuilder> task) => 
+        pipe.Then(task);
+    
+    public static ResponsePipe<TBuilder> operator |(ResponsePipe<TBuilder> pipe, Func<TBuilder, Task> task) => 
+        pipe.Then(task);
+    
     private async Task InvokeList(List<Step> steps)
     {
         foreach (var step in steps)

@@ -11,7 +11,7 @@ public class ResponsePipeTests
     {
         var result = await R.Pipe().Then(_ => { }).Do();
         Assert.True(result.IsSuccess);
-    }  
+    }   
     
     [Fact]
     public async Task Pipe_ThenWithErrors_Failure()
@@ -36,6 +36,23 @@ public class ResponsePipeTests
     {
         var result = await R.Pipe<string>().Then(b => { b.SetResult("");}).Do();
         Assert.True(result.IsSuccess);
+    }  
+    
+    [Fact]
+    public async Task PipeT_ThenOperatorWithoutErrors_Success()
+    {
+        const string value = "a";
+        var task =
+            (R.Pipe<string>()
+             | (b => { b.SetResult(""); })
+             | (b => { b.SetResult(value); }))
+            .Do();
+        
+        var result = await task;
+        
+        Assert.True(result.IsSuccess);
+        Assert.True(result.TryGetData(out var data));
+        Assert.Equal(value, data);
     }  
     
     [Fact]

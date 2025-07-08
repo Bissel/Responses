@@ -1,7 +1,45 @@
 # Bissel.Response
 Is a small Package for Response-Handling with Error and Exception handling and pipeing/chaining of parts in an Service.
 
-Example
+## Creating a Response
+Create a plain Response(-builder)
+```cs
+R.Create();
+R.Create<T>();
+R.CreateMany<T>();
+```
+
+Create a Pipe
+```cs
+R.Pipe(). ...;
+R.Pipe<T>(). ...;
+R.PipeMany<T>(). ...;
+```
+
+## Using Pipes 
+
+### Then-Syntax
+```cs
+R.Pipe<string>() 
+ .Then(DoCheck)
+ .Then(builder => { builder.SetValue(value); })
+ .Do();
+    
+DoCheck(ResponseBuilderBase builder) => { if(value.Length < 3) builder.AddMessage(new ErrorResponseMessage ...); }
+```
+
+### Pipe-Syntax
+```cs
+(R.Pipe<string>()
+ | DoCheck
+ | (builder => { builder.SetValue(value); })
+.Do();
+    
+DoCheck(ResponseBuilderBase builder) => { if(value.Length < 3) builder.AddMessage(new ErrorResponseMessage ...); }
+```
+
+
+## Examples
 ```cs
 record Entity(string Name);
 
