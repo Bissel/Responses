@@ -1,18 +1,8 @@
 namespace Bissel.Response.Builder;
 
-public sealed class ResponseBuilder : ResponseBuilderBase
+public sealed class ResponseBuilder : Builder<Response>
 {
-    internal ResponseBuilder()
-    {
-    }
-    
-    internal override void MarkAsFailed()
-    {
-        IsSuccess = false;
-    }
-
-    public static implicit operator Response(ResponseBuilder builder) => 
-        new(builder.IsSuccess is not false, builder.ResponseMessages.ToArray());
-
-    public static implicit operator Task<Response>(ResponseBuilder builder) => (Response)builder;
+    internal ResponseBuilder(){}
+    public override void MarkAsFailed() => IsSuccess = false;
+    internal override Response Build() => new(IsSuccess is not false, ResponseMessages.ToArray());
 }

@@ -3,63 +3,58 @@ using Bissel.Response.Messages;
 
 namespace Bissel.Response.Builder;
 
-public class ResponseManyBuilder<T> : ResponseBuilderBase
+public sealed class ResponseManyBuilder<T> : Builder<ResponseMany<T>>
 {
-    internal ResponseManyBuilder()
-    {
-    }
-
-    private List<T> Results { get; set; } = [];
-
-    internal override void MarkAsFailed()
+    internal ResponseManyBuilder(){}
+    
+    private List<T> _results = [];
+    
+    public override void MarkAsFailed()
     {
         IsSuccess = false;
-        Results = [];
-    }
-
-    public ResponseManyBuilder<T> AddResult(T result)
-    {
-        if (IsSuccess is false)
-            return this;
-
-        IsSuccess = true;
-        Results.Add(result);
-        return this;
-    }
-
-    public ResponseManyBuilder<T> AddResults(params T[] results)
-    {
-        if (IsSuccess is false)
-            return this;
-
-        IsSuccess = true;
-        Results.AddRange(results);
-        return this;
+        _results = [];
     }
     
-    public ResponseManyBuilder<T> SetResultOrError(IEnumerable<T>? mayResults, IErrorResponseMessage errorMessages)
+    public bool AddResult(T result)
+    {
+        if (IsSuccess is false)
+            return false;
+
+        IsSuccess = true;
+        _results.Add(result);
+        return true;
+    }
+
+    public bool AddResults(params T[] results)
+    {
+        if (IsSuccess is false)
+            return false;
+
+        IsSuccess = true;
+        _results.AddRange(results);
+        return true;
+    }
+    
+    public bool SetResultOrError(IEnumerable<T>? mayResults, IErrorResponseMessage errorMessages)
     {
         if(mayResults != null) 
-            AddResults(mayResults.ToArray());
-        else 
-            this.AddMessage(errorMessages);
-        return this;
+            return AddResults(mayResults.ToArray());
+        
+        AddMessage(errorMessages);
+        return false;
     }
     
-    public async Task<ResponseManyBuilder<T>> SetResultOrError(Task<IEnumerable<T>?> mayResult, IErrorResponseMessage errorMessages)
+    public async Task<bool> SetResultOrError(Task<IEnumerable<T>?> mayResult, IErrorResponseMessage errorMessages)
     {
         if(await mayResult.ConfigureAwait(false) is {} results) 
-            AddResults(results.ToArray());
-        else 
-            this.AddMessage(errorMessages);
-        return this;
+            return AddResults(results.ToArray());
+        
+        AddMessage(errorMessages);
+        return false;
     }
-
-    public static implicit operator ResponseWithMany<T>(ResponseManyBuilder<T> builder) =>
-        builder.IsSuccess is not false
-            ? new ResponseWithMany<T>(builder.Results.ToImmutableList(), builder.ResponseMessages.ToArray())
-            : new ResponseWithMany<T>(builder.ResponseMessages.ToArray());
-
-    public static implicit operator Task<ResponseWithMany<T>>(ResponseManyBuilder<T> builder) =>
-        (ResponseWithMany<T>)builder;
+    
+    internal override ResponseMany<T> Build() => 
+        IsSuccess is not false
+            ? new ResponseMany<T>(_results.ToImmutableList(), ResponseMessages.ToArray())
+            : new ResponseMany<T>(ResponseMessages.ToArray());
 }

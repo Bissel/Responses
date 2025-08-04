@@ -4,16 +4,16 @@ using Bissel.Response.Messages;
 
 namespace Bissel.Response;
 
-public class ResponseWith<T> : IResponse
+public class Response<T> : IResponse
 {
-    internal ResponseWith(T result, params IResponseMessage[] messages)
+    internal Response(T result, params IResponseMessage[] messages)
     {
         IsSuccess = true;
         Result = result;
         ResponseMessages = messages.ToList().AsReadOnly();
     }
 
-    internal ResponseWith(params IResponseMessage[] messages)
+    internal Response(params IResponseMessage[] messages)
     {
         IsSuccess = false;
         Result = default;
@@ -26,7 +26,7 @@ public class ResponseWith<T> : IResponse
     
     public ReadOnlyCollection<IResponseMessage> ResponseMessages { get; }
 
-    public static implicit operator Task<ResponseWith<T>>(ResponseWith<T> resp) => 
+    public static implicit operator Task<Response<T>>(Response<T> resp) => 
         Task.FromResult(resp);
 
     public bool TryGetData([NotNullWhen(true)] out T? data)
