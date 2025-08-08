@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using Bissel.Response.Messages;
+using Bissel.Responses.Messages;
 
-namespace Bissel.Response;
+namespace Bissel.Responses;
 
 public record Response : IResponse
 {

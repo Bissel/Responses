@@ -1,3 +1,3 @@
-namespace Bissel.Response.Messages;
+namespace Bissel.Responses.Messages;
 
 public interface IErrorResponseMessage: IResponseMessage;

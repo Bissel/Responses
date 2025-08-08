@@ -1,8 +1,12 @@
-namespace Bissel.Response.Builder;
+using Bissel.Responses.Messages;
 
-public sealed class ResponseBuilder : Builder<Response>
+namespace Bissel.Responses.Builder;
+
+public sealed class ResponseBuilder(params IResponseMessage[] messages) : Builder<Response>(messages)
 {
-    internal ResponseBuilder(){}
+    /// <inheritdoc />
     public override void MarkAsFailed() => IsSuccess = false;
-    internal override Response Build() => new(IsSuccess is not false, ResponseMessages.ToArray());
+    
+    /// <inheritdoc />
+    internal override Response Build() => new(HasSucceeded || IsUndetermined, ResponseMessages.ToArray());
 }

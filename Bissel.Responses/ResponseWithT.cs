@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Bissel.Response.Messages;
+using Bissel.Responses.Messages;
 
-namespace Bissel.Response;
+namespace Bissel.Responses;
 
 public class Response<T> : IResponse
 {

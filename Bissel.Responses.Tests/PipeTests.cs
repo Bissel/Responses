@@ -1,6 +1,6 @@
-using Bissel.Response;
-using Bissel.Response.Builder;
-using Bissel.Response.Messages;
+using Bissel.Responses;
+using Bissel.Responses.Builder;
+using Bissel.Responses.Messages;
 
 namespace Bissel.Responses.Tests;
 
@@ -135,10 +135,10 @@ public class PipeTests
         const string value = "a";
         Task<ResponseMany<string>> task = Pipe
             .CreateMany<string>()
-            .Then(builder => { builder.AddResult(value); });
+            .Then(builder => { builder.AddResults(value); });
         
         var result = await task;
-            
+        
         Assert.True(result.IsSuccess);
         Assert.Empty(result.ResponseMessages);
         Assert.True(result.TryGetData(out var data));

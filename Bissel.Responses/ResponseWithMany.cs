@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
-using Bissel.Response.Messages;
+using Bissel.Responses.Messages;
 
-namespace Bissel.Response;
+namespace Bissel.Responses;
 
 public class ResponseMany<T> : Response<IReadOnlyCollection<T>>
 {

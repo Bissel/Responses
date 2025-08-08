@@ -20,7 +20,7 @@ R.PipeMany<T>(). ...;
 
 ### Then-Syntax
 ```cs
-R.Pipe<string>() 
+Pipe.Create<string>() 
  .Then(DoCheck)
  .Then(builder => { builder.SetValue(value); })
  .Do();
@@ -30,10 +30,9 @@ DoCheck(ResponseBuilderBase builder) => { if(value.Length < 3) builder.AddMessag
 
 ### Pipe-Syntax
 ```cs
-(R.Pipe<string>()
+Pipe.Create<string>()
  | DoCheck
- | (builder => { builder.SetValue(value); })
-.Do();
+ | (builder => { builder.SetValue(value); });
     
 DoCheck(ResponseBuilderBase builder) => { if(value.Length < 3) builder.AddMessage(new ErrorResponseMessage ...); }
 ```
@@ -45,14 +44,14 @@ record Entity(string Name);
 
 interface IMyService {
   Response Delete(Guid id);
-  Task<ResponseWith<Entity>> Create(string name);
-  ResponseWithMany<Entity> Search(string name);
-  ResponseWith<string> ThrowOnNull(string value);
+  Task<Response<Entity>> Create(string name);
+  ResponseMany<Entity> Search(string name);
+  Response<string> ThrowOnNull(string value);
 }
 
 class MyService(IStore store) : IMyService {
   public Response Delete(Guid id) {
-    var resp = R.Create();
+    var resp = new ResponseBuilder();
 
     if(store.DeleteEntity(id))
       resp.AddMessage(new ResponseMessage("deleteSuccess", $"Successfully deleted {nameof(Entity)} with Id: \"{id}\"."));
@@ -62,8 +61,8 @@ class MyService(IStore store) : IMyService {
     return resp;
   }
 
-  public Task<ResponseWith<Entity>> Create(string name) =>
-    R.Pipe<Entity>()
+  public Task<Response<Entity>> Create(string name) =>
+    Pipe.Create<Entity>()
       .Then(builder => {
         if(string.IsNullOrWhitespace(name))
           builder.AddMessage(new ErrorResponseMessage("createNull", $"When creating an {nameof(Entity)} the \"name\" must be set."));
@@ -79,17 +78,15 @@ class MyService(IStore store) : IMyService {
       .Catch("createException", $"Error while creating a {nameof(Entity)}.")
       .Do();
 
-  public ResponseWithMany<Entity> Search(string name) =>
-    R.PipeMany<Entity>()
-      .Then(builder => builder.AddResults(store.Query(e => e.Name == name)))
-      .Do();
+  public ResponseMany<Entity> Search(string name) =>
+    Pipe.CreateMany<Entity>()
+      .Then(builder => builder.AddResults(store.Query(e => e.Name == name)));
 
-  public ResponseWith<string> ThrowOnNull(string value) =>
-    R.Pipe<string>()
+  public Response<string> ThrowOnNull(string value) =>
+    Pipe.Create<string>()
       .Then(bulder => {
         ArgumentNullException.ThrowIfNull(value);
         builder.SetValue(value);
-      })
-      .Do();
+      });
 }
 ```

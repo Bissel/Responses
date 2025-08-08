@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Bissel.Response.Builder;
-using Bissel.Response.Messages;
+using Bissel.Responses.Builder;
+using Bissel.Responses.Messages;
 
-namespace Bissel.Response;
+namespace Bissel.Responses;
 
 public delegate void NextAction<TResponse, in TBuilder>(TBuilder builder)
     where TResponse : IResponse
